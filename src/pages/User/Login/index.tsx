@@ -1,6 +1,6 @@
 import Footer from '@/components/Footer';
-import { login } from '@/services/ant-design-pro/api';
 import { getFakeCaptcha } from '@/services/ant-design-pro/login';
+import { userLoginUsingPost } from '@/services/wbapi-backend/userController';
 import {
   AlipayCircleOutlined,
   LockOutlined,
@@ -16,11 +16,11 @@ import {
   ProFormText,
 } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
-import { history, useModel, Helmet } from '@umijs/max';
-import { Alert, message, Tabs } from 'antd';
-import Settings from '../../../../config/defaultSettings';
+import { Helmet, history, useModel } from '@umijs/max';
+import { Alert, message } from 'antd';
 import React, { useState } from 'react';
 import { flushSync } from 'react-dom';
+import Settings from '../../../../config/defaultSettings';
 const ActionIcons = () => {
   const langClassName = useEmotionCss(({ token }) => {
     return {
@@ -43,22 +43,6 @@ const ActionIcons = () => {
     </>
   );
 };
-const Lang = () => {
-  const langClassName = useEmotionCss(({ token }) => {
-    return {
-      width: 42,
-      height: 42,
-      lineHeight: '42px',
-      position: 'fixed',
-      right: 16,
-      borderRadius: token.borderRadius,
-      ':hover': {
-        backgroundColor: token.colorBgTextHover,
-      },
-    };
-  });
-  return;
-};
 const LoginMessage: React.FC<{
   content: string;
 }> = ({ content }) => {
@@ -74,9 +58,9 @@ const LoginMessage: React.FC<{
   );
 };
 const Login: React.FC = () => {
-  const [userLoginState, setUserLoginState] = useState<API.LoginResult>({});
-  const [type, setType] = useState<string>('account');
-  const { initialState, setInitialState } = useModel('@@initialState');
+  const [userLoginState] = useState<API.LoginResult>({});
+  const [type] = useState<string>('account');
+  const { setInitialState } = useModel('@@initialState');
   const containerClassName = useEmotionCss(() => {
     return {
       display: 'flex',
@@ -88,35 +72,26 @@ const Login: React.FC = () => {
       backgroundSize: '100% 100%',
     };
   });
-  const fetchUserInfo = async () => {
-    const userInfo = await initialState?.fetchUserInfo?.();
+  const fetchUserInfo = (userInfo: API.UserVO) => {
     if (userInfo) {
       flushSync(() => {
-        setInitialState((s) => ({
-          ...s,
-          currentUser: userInfo,
-        }));
+        //设置用户登录信息到全局对象中去
+        setInitialState({ loginUser: userInfo });
       });
     }
   };
-  const handleSubmit = async (values: API.LoginParams) => {
+  const handleSubmit = async (values: API.UserLoginRequest) => {
     try {
       // 登录
-      const msg = await login({
+      const res = await userLoginUsingPost({
         ...values,
-        type,
       });
-      if (msg.status === 'ok') {
-        const defaultLoginSuccessMessage = '登录成功！';
-        message.success(defaultLoginSuccessMessage);
-        await fetchUserInfo();
+      if (res.data) {
+        fetchUserInfo(res.data);
         const urlParams = new URL(window.location.href).searchParams;
-        history.push(urlParams.get('redirect') || '/');
+        history.push(urlParams.get('redirect') || '/admin/interface_info');
         return;
       }
-      console.log(msg);
-      // 如果失败去设置用户错误信息
-      setUserLoginState(msg);
     } catch (error) {
       const defaultLoginFailureMessage = '登录失败，请重试！';
       console.log(error);
@@ -131,7 +106,6 @@ const Login: React.FC = () => {
           {'登录'}- {Settings.title}
         </title>
       </Helmet>
-      <Lang />
       <div
         style={{
           flex: '1',
@@ -151,32 +125,16 @@ const Login: React.FC = () => {
           }}
           actions={['其他登录方式 :', <ActionIcons key="icons" />]}
           onFinish={async (values) => {
-            await handleSubmit(values as API.LoginParams);
+            await handleSubmit(values as API.UserLoginRequest);
           }}
         >
-          <Tabs
-            activeKey={type}
-            onChange={setType}
-            centered
-            items={[
-              {
-                key: 'account',
-                label: '账户密码登录',
-              },
-              {
-                key: 'mobile',
-                label: '手机号登录',
-              },
-            ]}
-          />
-
           {status === 'error' && loginType === 'account' && (
             <LoginMessage content={'错误的用户名和密码(admin/ant.design)'} />
           )}
           {type === 'account' && (
             <>
               <ProFormText
-                name="username"
+                name="userAccount"
                 fieldProps={{
                   size: 'large',
                   prefix: <UserOutlined />,
@@ -190,7 +148,7 @@ const Login: React.FC = () => {
                 ]}
               />
               <ProFormText.Password
-                name="password"
+                name="userPassword"
                 fieldProps={{
                   size: 'large',
                   prefix: <LockOutlined />,
