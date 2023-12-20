@@ -2,7 +2,25 @@ export default [
   {
     path: '/user',
     layout: false,
-    routes: [{ name: '登录', path: '/user/login', component: './User/Login' }],
+    routes: [
+      { name: '登录', path: '/user/login', component: './User/Login' },
+      { name: '注册', path: '/user/register', component: './User/Register' },
+    ],
+  },
+  {
+    path: '/',
+    name: '主页',
+    access: 'canUser',
+    icon: 'smile',
+    component: './',
+  },
+  {
+    path: '/interface_info/:id',
+    name: '查看接口',
+    access: 'canUser',
+    icon: 'smile',
+    component: './InterfaceInfo',
+    hideInMenu: true,
   },
   {
     path: '/admin',
@@ -14,10 +32,9 @@ export default [
         name: '接口',
         path: '/admin/interface_info',
         icon: 'table',
-        component: './InterfaceInfo',
+        component: './Admin/InterfaceInfo',
       },
     ],
   },
-  { path: '/', redirect: '/admin/interface_info' },
   { path: '*', layout: false, component: './404' },
 ];
