@@ -1,7 +1,7 @@
 import Footer from '@/components/Footer';
 import { Question } from '@/components/RightContent';
 import { requestConfig } from '@/requestConfig';
-import { getLoginUserUsingGet } from '@/services/wbapi-backend/userController';
+import { getLoginUserUsingGET } from '@/services/wbapi-backend/userController';
 import { LinkOutlined } from '@ant-design/icons';
 import { SettingDrawer } from '@ant-design/pro-components';
 import type { RunTimeLayoutConfig } from '@umijs/max';
@@ -19,7 +19,7 @@ export async function getInitialState(): Promise<InitialState> {
     loginUser: undefined,
   };
   try {
-    const res = await getLoginUserUsingGet();
+    const res = await getLoginUserUsingGET();
     if (res.data) {
       state.loginUser = res.data;
     }

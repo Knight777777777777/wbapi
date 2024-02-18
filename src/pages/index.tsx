@@ -1,7 +1,7 @@
-import { listInterfaceInfoByPageUsingGet } from '@/services/wbapi-backend/interfaceInfoController';
 import { PageContainer } from '@ant-design/pro-components';
 import { List } from 'antd';
 import React, { useEffect, useState } from 'react';
+import { listInterfaceInfoByPageUsingGET } from '@/services/wbapi-backend/interfaceInfoController';
 
 const Index: React.FC = () => {
   // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -13,7 +13,7 @@ const Index: React.FC = () => {
   const loadData = async (current = 1, pageSize = 5) => {
     setLoading(true);
     try {
-      const res = await listInterfaceInfoByPageUsingGet({
+      const res = await listInterfaceInfoByPageUsingGET({
         current,
         pageSize,
       });

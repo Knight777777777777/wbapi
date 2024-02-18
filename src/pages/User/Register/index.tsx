@@ -1,5 +1,5 @@
 import Footer from '@/components/Footer';
-import { userRegisterUsingPost } from '@/services/wbapi-backend/userController';
+
 import {
   AlipayCircleOutlined,
   LockOutlined,
@@ -14,6 +14,7 @@ import { Alert, message } from 'antd';
 import React, { useState } from 'react';
 import { flushSync } from 'react-dom';
 import Settings from '../../../../config/defaultSettings';
+import { userRegisterUsingPOST } from '@/services/wbapi-backend/userController';
 const ActionIcons = () => {
   const langClassName = useEmotionCss(({ token }) => {
     return {
@@ -76,7 +77,7 @@ const Register: React.FC = () => {
   const handleSubmit = async (values: API.UserRegisterRequest) => {
     try {
       // 登录
-      const res = await userRegisterUsingPost({
+      const res = await userRegisterUsingPOST({
         ...values,
       });
       if (res.data) {

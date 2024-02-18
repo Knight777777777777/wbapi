@@ -29,10 +29,16 @@ export default [
     access: 'canAdmin',
     routes: [
       {
-        name: '接口',
+        name: '接口管理',
         path: '/admin/interface_info',
         icon: 'table',
         component: './Admin/InterfaceInfo',
+      },
+      {
+        name: '接口分析',
+        path: '/admin/interface_analysis',
+        icon: 'analysis',
+        component: './Admin/InterfaceAnalysis',
       },
     ],
   },

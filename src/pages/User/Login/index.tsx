@@ -1,6 +1,5 @@
 import Footer from '@/components/Footer';
 import { getFakeCaptcha } from '@/services/ant-design-pro/login';
-import { userLoginUsingPost } from '@/services/wbapi-backend/userController';
 import {
   AlipayCircleOutlined,
   LockOutlined,
@@ -21,6 +20,7 @@ import { Alert, message } from 'antd';
 import React, { useState } from 'react';
 import { flushSync } from 'react-dom';
 import Settings from '../../../../config/defaultSettings';
+import { userLoginUsingPOST } from '@/services/wbapi-backend/userController';
 const ActionIcons = () => {
   const langClassName = useEmotionCss(({ token }) => {
     return {
@@ -83,14 +83,14 @@ const Login: React.FC = () => {
   const handleSubmit = async (values: API.UserLoginRequest) => {
     try {
       // 登录
-      const res = await userLoginUsingPost({
+      const res = await userLoginUsingPOST({
         ...values,
       });
       if (res.data) {
         // @ts-ignore
         fetchUserInfo(res.data);
         const urlParams = new URL(window.location.href).searchParams;
-        history.push(urlParams.get('redirect') || '/admin/interface_info');
+        history.push(urlParams.get('redirect') || '/');
         return;
       }
     } catch (error) {

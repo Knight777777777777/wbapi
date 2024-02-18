@@ -1,4 +1,4 @@
-import { userLogoutUsingPost } from '@/services/wbapi-backend/userController';
+import { userLogoutUsingPOST } from '@/services/wbapi-backend/userController';
 import { LogoutOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { history, useModel } from '@umijs/max';
@@ -44,7 +44,7 @@ export const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu, childre
         flushSync(() => {
           setInitialState((s) => ({ ...s, loginUser: undefined }));
         });
-        userLogoutUsingPost();
+        userLogoutUsingPOST();
         const { search, pathname } = window.location;
         const redirectUrl = pathname + search;
         history.replace('/user/login', { redirectUrl });

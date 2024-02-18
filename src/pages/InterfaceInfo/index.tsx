@@ -1,6 +1,6 @@
 import {
-  getInterfaceInfoByIdUsingGet,
-  invokeInterfaceInfoUsingPost,
+  getInterfaceInfoByIdUsingGET,
+  invokeInterfaceInfoUsingPOST,
 } from '@/services/wbapi-backend/interfaceInfoController';
 import { useParams } from '@@/exports';
 import { PageContainer } from '@ant-design/pro-components';
@@ -30,7 +30,7 @@ const Index: React.FC = () => {
     setLoading(true);
     try {
       // 发起请求获取接口信息，接受一个包含 id 参数的对象作为参数
-      const res = await getInterfaceInfoByIdUsingGet({
+      const res = await getInterfaceInfoByIdUsingGET({
         id: Number(params.id),
       });
       // 将获取到的接口信息设置到 data 状态中
@@ -56,7 +56,7 @@ const Index: React.FC = () => {
       return;
     }
     try {
-      const res = await invokeInterfaceInfoUsingPost({
+      const res = await invokeInterfaceInfoUsingPOST({
         id: params.id,
         ...values,
       });

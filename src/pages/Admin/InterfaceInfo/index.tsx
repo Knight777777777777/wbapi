@@ -2,13 +2,13 @@ import CreateModal from '@/pages/Admin/InterfaceInfo/components/CreateModal';
 
 import UpdateModal from '@/pages/Admin/InterfaceInfo/components/UpdateModal';
 import {
-  addInterfaceInfoUsingPost,
-  deleteInterfaceInfosUsingPost,
-  deleteInterfaceInfoUsingPost,
-  listInterfaceInfoByPageUsingGet,
-  offlineInterfaceInfoUsingPost,
-  onlineInterfaceInfoUsingPost,
-  updateInterfaceInfoUsingPost,
+  addInterfaceInfoUsingPOST,
+  deleteInterfaceInfosUsingPOST,
+  deleteInterfaceInfoUsingPOST,
+  listInterfaceInfoByPageUsingGET,
+  offlineInterfaceInfoUsingPOST,
+  onlineInterfaceInfoUsingPOST,
+  updateInterfaceInfoUsingPOST,
 } from '@/services/wbapi-backend/interfaceInfoController';
 import { PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
@@ -46,7 +46,7 @@ const TableList: React.FC = () => {
   const handleAdd = async (fields: API.InterfaceInfo) => {
     const hide = message.loading('正在添加');
     try {
-      await addInterfaceInfoUsingPost({
+      await addInterfaceInfoUsingPOST({
         ...fields,
       });
       hide();
@@ -69,7 +69,7 @@ const TableList: React.FC = () => {
   const handleUpdate = async (fields: API.InterfaceInfo) => {
     const hide = message.loading('修改中');
     try {
-      await updateInterfaceInfoUsingPost({
+      await updateInterfaceInfoUsingPOST({
         id: currentRow?.id,
         ...fields,
       });
@@ -95,7 +95,7 @@ const TableList: React.FC = () => {
     const hide = message.loading('正在删除');
     if (!record) return true;
     try {
-      await deleteInterfaceInfoUsingPost({
+      await deleteInterfaceInfoUsingPOST({
         id: record.id,
       });
       hide();
@@ -122,7 +122,7 @@ const TableList: React.FC = () => {
       content: '确定要删除所选行吗？',
       onOk: async () => {
         try {
-          await deleteInterfaceInfosUsingPost({
+          await deleteInterfaceInfosUsingPOST({
             ids: selectedRowsState.map((row) => row.id) as never,
           });
           message.success('Deleted successfully and will refresh soon');
@@ -145,7 +145,7 @@ const TableList: React.FC = () => {
   const handleOnline = async (record: API.InterfaceInfo) => {
     if (!record) return true;
     try {
-      await onlineInterfaceInfoUsingPost({
+      await onlineInterfaceInfoUsingPOST({
         id: record.id,
       });
       message.success('上线成功');
@@ -165,7 +165,7 @@ const TableList: React.FC = () => {
   const handleOffline = async (record: API.InterfaceInfo) => {
     if (!record) return true;
     try {
-      await offlineInterfaceInfoUsingPost({
+      await offlineInterfaceInfoUsingPOST({
         id: record.id,
       });
       message.success('关闭成功');
@@ -334,7 +334,7 @@ const TableList: React.FC = () => {
         ]}
         request={async (params: any) => {
           try {
-            const res = await listInterfaceInfoByPageUsingGet({
+            const res = await listInterfaceInfoByPageUsingGET({
               ...params,
             });
             if (res?.data) {
