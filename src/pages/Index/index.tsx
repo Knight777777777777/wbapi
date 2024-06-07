@@ -3,6 +3,7 @@ import { List } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { listInterfaceInfoByPageUsingGET } from '@/services/wbapi-backend/interfaceInfoController';
 
+const PAGE_SIZE: number = 8;
 const Index: React.FC = () => {
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const [list, setList] = useState<API.InterfaceInfo[]>([]);
@@ -10,7 +11,7 @@ const Index: React.FC = () => {
   const [loading, setLoading] = useState(false);
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const [total, setTotal] = useState<number>(0);
-  const loadData = async (current = 1, pageSize = 5) => {
+  const loadData = async (current = 1, pageSize = PAGE_SIZE) => {
     setLoading(true);
     try {
       const res = await listInterfaceInfoByPageUsingGET({
@@ -28,7 +29,7 @@ const Index: React.FC = () => {
     loadData();
   }, []);
   return (
-    <PageContainer title="在线接口开方平台">
+    <PageContainer title="在线接口开方平台" style={{ height: '85vh' }}>
       <List
         className={'my-list'}
         rowKey="id"
@@ -56,7 +57,7 @@ const Index: React.FC = () => {
           showTotal(total: number) {
             return '总数：' + total;
           },
-          pageSize: 5,
+          pageSize: PAGE_SIZE,
           total,
           onChange: (page, pageSize) => {
             loadData(page, pageSize);

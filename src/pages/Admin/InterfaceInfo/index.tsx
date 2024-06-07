@@ -10,8 +10,8 @@ import {
   onlineInterfaceInfoUsingPOST,
   updateInterfaceInfoUsingPOST,
 } from '@/services/wbapi-backend/interfaceInfoController';
-import { PlusOutlined } from '@ant-design/icons';
-import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
+import {PlusOutlined} from '@ant-design/icons';
+import type {ActionType, ProColumns, ProDescriptionsItemProps} from '@ant-design/pro-components';
 import {
   FooterToolbar,
   PageContainer,
@@ -19,8 +19,8 @@ import {
   ProTable,
 } from '@ant-design/pro-components';
 import '@umijs/max';
-import { Button, Drawer, message, Modal } from 'antd';
-import React, { useRef, useState } from 'react';
+import {Button, Drawer, message, Modal} from 'antd';
+import React, {useRef, useState} from 'react';
 
 const TableList: React.FC = () => {
   /**
@@ -67,6 +67,9 @@ const TableList: React.FC = () => {
    * @param fields
    */
   const handleUpdate = async (fields: API.InterfaceInfo) => {
+    if (!currentRow) {
+      return;
+    }
     const hide = message.loading('修改中');
     try {
       await updateInterfaceInfoUsingPOST({
@@ -74,13 +77,13 @@ const TableList: React.FC = () => {
         ...fields,
       });
       hide();
-      message.success('Configuration is successful');
+      message.success('修改成功');
       actionRef.current?.reload();
       handleupdateModalVisible(false);
       return true;
     } catch (error: any) {
       hide();
-      message.error('Configuration failed, please try again!' + error.message);
+      message.error('修改失败!' + error.message);
       return false;
     }
   };
@@ -138,7 +141,7 @@ const TableList: React.FC = () => {
   };
   /**
    *  Delete node
-   * @zh-CN 删除节点
+   * @zh-CN 上线节点
    *
    * @param selectedRows
    */
@@ -158,7 +161,7 @@ const TableList: React.FC = () => {
   };
   /**
    *  Delete node
-   * @zh-CN 删除节点
+   * @zh-CN 下线节点
    *
    * @param selectedRows
    */
@@ -183,6 +186,22 @@ const TableList: React.FC = () => {
 
   const columns: ProColumns<API.InterfaceInfo>[] = [
     {
+      title: '状态',
+      dataIndex: 'status',
+      valueType: 'select',
+      hideInForm: true,
+      valueEnum: {
+        0: {
+          text: '关闭',
+          status: 'Default',
+        },
+        1: {
+          text: '开启',
+          status: 'Processing',
+        },
+      },
+    },
+    {
       title: 'API名称',
       dataIndex: 'name',
       valueType: 'text',
@@ -201,6 +220,16 @@ const TableList: React.FC = () => {
       ellipsis: true,
     },
     {
+      title: '请求参数',
+      dataIndex: 'requestParams',
+      valueType: 'jsonCode',
+    },
+    {
+      title: '请求类型',
+      dataIndex: 'method',
+      valueType: 'text',
+    },
+    {
       title: 'url',
       dataIndex: 'url',
       valueType: 'text',
@@ -209,41 +238,12 @@ const TableList: React.FC = () => {
       title: '请求头',
       dataIndex: 'requestHeader',
       valueType: 'jsonCode',
-      width: 300,
+      width: 100,
     },
     {
       title: '响应头',
       dataIndex: 'responseHeader',
       valueType: 'jsonCode',
-    },
-    {
-      title: '请求参数',
-      dataIndex: 'requestParams',
-      valueType: 'jsonCode',
-    },
-    {
-      title: '状态',
-      dataIndex: 'status',
-      valueType: 'select',
-      valueEnum: {
-        0: {
-          text: '关闭',
-          status: 'Default',
-        },
-        1: {
-          text: '运行中',
-          status: 'Processing',
-        },
-        3: {
-          text: '异常',
-          status: 'Error',
-        },
-      },
-    },
-    {
-      title: '请求类型',
-      dataIndex: 'method',
-      valueType: 'text',
     },
     {
       title: '创建人id',
@@ -268,33 +268,29 @@ const TableList: React.FC = () => {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
+      fixed:'right',
+      width: 200,
       render: (_, record) => [
-        <a
+        <Button
           key="config"
+          type="primary"
           onClick={() => {
             handleupdateModalVisible(true);
             setCurrentRow(record);
           }}
         >
           修改
-        </a>,
-        <a
-          key="remove"
-          onClick={() => {
-            handleRemove(record);
-          }}
-        >
-          删除
-        </a>,
+        </Button>,
         record.status === 0 ? (
-          <a
+          <Button
             key="online"
+            type="primary"
             onClick={() => {
               handleOnline(record);
             }}
           >
             上线
-          </a>
+          </Button>
         ) : record.status === 1 ? (
           <Button
             key="offline"
@@ -306,14 +302,23 @@ const TableList: React.FC = () => {
             关闭
           </Button>
         ) : null,
+        <Button
+          type="text"
+          key="config"
+          danger
+          onClick={() => {
+            handleRemove(record);
+          }}
+        >
+          删除
+        </Button>,
       ],
     },
   ];
-
   return (
     <PageContainer>
       <ProTable<API.InterfaceInfo, API.PageParams>
-        scroll={{ x: 'max-content' }}
+        scroll={{x: 'max-content'}}
         headerTitle={'API表格'}
         actionRef={actionRef}
         rowKey="id"
@@ -329,7 +334,7 @@ const TableList: React.FC = () => {
               handleModalVisible(true);
             }}
           >
-            <PlusOutlined /> 新建
+            <PlusOutlined/> 新建
           </Button>,
         ]}
         request={async (params: any) => {

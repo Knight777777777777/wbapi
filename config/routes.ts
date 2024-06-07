@@ -9,17 +9,24 @@ export default [
   },
   {
     path: '/',
-    name: '主页',
+    name: '欢迎页',
     access: 'canUser',
     icon: 'smile',
-    component: './',
+    component: './welcome',
+  },
+  {
+    path: '/interfaceInfo',
+    name: '接口列表',
+    access: 'canUser',
+    icon: 'smile',
+    component: './Index',
   },
   {
     path: '/interface_info/:id',
     name: '查看接口',
     access: 'canUser',
     icon: 'smile',
-    component: './InterfaceInfo',
+    component: './Index/InterfaceInfo',
     hideInMenu: true,
   },
   {

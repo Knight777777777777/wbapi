@@ -69,7 +69,7 @@ const Index: React.FC = () => {
     setInvokeLoading(false);
   };
   return (
-    <PageContainer title="查看接口文档">
+    <PageContainer title="查看接口文档" >
       <Card title={'接口信息'} loading={loading}>
         {data ? (
           <Descriptions title={data.name} column={1}>
